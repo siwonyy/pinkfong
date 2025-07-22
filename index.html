@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+  <link rel="stylesheet" href="pinkpong.css">
+  <title>핑크퐁</title>
+
+  <script>
+$(function () {
+  let currentIndex = 0;
+  const $slides = $('#section .mainpromo .mainpromo-contents .mainpromo-contents-main ul li');
+  const totalSlides = $slides.length;
+  const $slideCounter = $('.slide-counter');
+
+  // 초기 세팅 - 모두 숨기고 첫번째는 보이게 (opacity 1)
+  $slides.css({ display: 'none', opacity: 0, position: 'absolute', top: 0, left: 0, width: '100%' });
+  $slides.eq(currentIndex).css({ display: 'block', opacity: 1 });
+
+  updateCounter();
+
+  $('.button-prev').click(function () {
+    let prevIndex = currentIndex - 1;
+    if (prevIndex < 0) prevIndex = totalSlides - 1;
+
+    $slides.eq(currentIndex).stop(true, true).animate({ opacity: 0 }, 400, function () {
+      $(this).css('display', 'none');
+    });
+    $slides.eq(prevIndex).css('display', 'block').stop(true, true).animate({ opacity: 1 }, 400);
+
+    currentIndex = prevIndex;
+    updateCounter();
+  });
+
+  $('.button-next').click(function () {
+    let nextIndex = currentIndex + 1;
+    if (nextIndex >= totalSlides) nextIndex = 0;
+
+    $slides.eq(currentIndex).stop(true, true).animate({ opacity: 0 }, 400, function () {
+      $(this).css('display', 'none');
+    });
+    $slides.eq(nextIndex).css('display', 'block').stop(true, true).animate({ opacity: 1 }, 400);
+
+    currentIndex = nextIndex;
+    updateCounter();
+  });
+
+  function updateCounter() {
+    $slideCounter.text(('0' + (currentIndex + 1)).slice(-2) + ' / ' + ('0' + totalSlides).slice(-2));
+  }
+
+  // 자동슬라이드
+  setInterval(function () {
+    $('.button-next').click();
+  }, 5000);
+});
+
+  // 두번째 메인 프로모션 (챕터 3)
+$(function () {
+  let currentIndex = 0;
+  const $slides = $('#section .entertain .entertain-contents ul li');
+  const slideCount = $slides.length;
+  const slideWidth = 1350;
+
+  // ✅ 초기에 정확한 위치 세팅
+  updateSlidePosition();
+
+  $('.entertain-button-next').click(function () {
+    currentIndex++;
+    if (currentIndex >= slideCount) currentIndex = 0;
+    updateSlidePosition();
+  });
+
+  $('.entertain-button-prev').click(function () {
+    currentIndex--;
+    if (currentIndex < 0) currentIndex = slideCount - 1;
+    updateSlidePosition();
+  });
+
+  function updateSlidePosition() {
+    $slides.each(function (i) {
+      const newLeft = ((i - currentIndex) * slideWidth);
+      $(this).stop().animate({ left: newLeft + 'px' }, 500); // ✅ 이 부분만 변경
+    });
+  }
+});
+
+    // 세번쨰 메인 프로모션 (챕터 5)
+$(function() {
+  const $container = $('.store-contents2');
+  const scrollDistance = 200;
+
+  // 버튼 클릭 스크롤
+  $('.btn-left').on('click', function() {
+    $container.animate({ scrollLeft: '-=' + scrollDistance }, 300);
+  });
+
+  $('.btn-right').on('click', function() {
+    $container.animate({ scrollLeft: '+=' + scrollDistance }, 300);
+  });
+
+  // 드래그로 스크롤 기능
+  let isDown = false;
+  let startX;
+  let scrollLeft;
+
+  $container.on('mousedown', function(e) {
+    isDown = true;
+    $container.addClass('active');  // CSS 커서 변경용 클래스
+    startX = e.pageX - $container.offset().left;
+    scrollLeft = $container.scrollLeft();
+    e.preventDefault();  // 텍스트 드래그 방지
+  });
+
+  $(document).on('mouseup', function() {
+    isDown = false;
+    $container.removeClass('active');
+  });
+
+  $(document).on('mousemove', function(e) {
+    if (!isDown) return;
+    const x = e.pageX - $container.offset().left;
+    const walk = (x - startX) * 2; // 속도 조절 가능
+    $container.scrollLeft(scrollLeft - walk);
+  });
+});
+
+
+  // 마지막
+$(function () {
+  const $container = $('#section .explore .explore-contents');
+  const $carousel = $container.find('.explore-carousel');
+  const slideCount = $carousel.children().length;
+  const slideWidth = $carousel.children().outerWidth(true);
+  
+  // 앞뒤로 아이템 복제 (무한 반복용)
+  $carousel.append($carousel.children().clone());
+  $carousel.prepend($carousel.children().slice(0, slideCount).clone());
+
+  // 초기 스크롤 위치 - 원본 아이템 시작 지점으로 세팅
+  $container.scrollLeft(slideWidth * slideCount);
+
+  let isDown = false;
+  let startX;
+  let scrollLeft;
+
+  $container.on('mousedown touchstart', function (e) {
+    isDown = true;
+    startX = e.pageX || e.originalEvent.touches[0].pageX;
+    scrollLeft = $container.scrollLeft();
+    $container.css('cursor', 'grabbing');
+    e.preventDefault();
+  });
+
+  $(document).on('mouseup touchend', function () {
+    isDown = false;
+    $container.css('cursor', 'grab');
+  });
+
+  $(document).on('mousemove touchmove', function (e) {
+    if (!isDown) return;
+    const x = e.pageX || e.originalEvent.touches[0].pageX;
+    const walk = startX - x;
+    $container.scrollLeft(scrollLeft + walk);
+    loopCheck();
+  });
+
+  function loopCheck() {
+    const maxScroll = slideWidth * slideCount * 2;
+    if ($container.scrollLeft() <= 0) {
+      $container.scrollLeft($container.scrollLeft() + slideWidth * slideCount);
+    }
+    if ($container.scrollLeft() >= maxScroll) {
+      $container.scrollLeft($container.scrollLeft() - slideWidth * slideCount);
+    }
+  }
+});
+
+// 말풍선
+$(function(){
+  const messages = [
+    "안녕 친구들!",
+    "만나서 반가워~",
+    "❤"
+  ];
+
+  let index = 0;
+  const $chat = $('.chat-text');
+
+  function showNextMessage() {
+    if (index >= messages.length) {
+      index = 0;  // 인덱스 초기화해서 반복
+    }
+    $chat.text(messages[index]).fadeIn(1000).delay(2000).fadeOut(1000, function() {
+      index++;
+      showNextMessage();
+    });
+  }
+
+  showNextMessage();
+});
+  </script>
+</head>
+
+<body>
+
+  <div id="header">
+    <!-- 헤더1 -->
+    <div class="header-inner">
+      <img src="images/main_logo.png" alt="logo">
+      <ul class="nav">
+        <li><a href="#">사업소개</a></li>
+        <li><a href="#">스토어</a></li>
+        <li><a href="#">핑크퐁플러스</a></li>
+        <li><a href="#">고객센터</a></li>
+      </ul>
+    </div>
+    <!-- 헤더2 -->
+    <div class="header-shapes">
+      <ul>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="section">
+    <!-- 첫번째 메인프로모션 -->
+    <div class="mainpromo">
+      <h2 class="mainpromo-title" data-aos="fade-up">
+        핑크퐁과 만들어가요
+        <br>
+        더 멋진 세상!
+      </h2>
+      <div class="mainpromo-contents">
+        <div class="mainpromo-contents-main" data-aos="fade-up">
+          <ul>
+            <li><a href="#"><img src="images/mainpromo1.jpg" alt=""></a></li>
+            <li><a href="#"><img src="images/mainpromo2.png" alt=""></a></li>
+            <li><a href="#"><img src="images/mainpromo3.png" alt=""></a></li>
+          </ul>
+          <div class="button">
+            <img src="images/main_button.png" alt="">
+            <div class="button-prev"></div>
+            <div class="slide-counter">01 / 03</div>
+            <div class="button-next"></div>
+          </div>
+        </div>
+        <div class="mainpromo-contents-sub">
+          <div class="mainpromo-contents-sub1" data-aos="fade-left">
+            <h4>더보기</h4>
+            <p>아이와함께 <br>
+              다같이 집에서</p>
+            <img src="images/mainpromo_shark.png" alt="">
+          </div>
+          <div class="mainpromo-contents-sub2" data-aos="fade-left">
+            <h4><img src="images/plus_logo.png" alt=""></h4>
+            <p>모든아이들이 <br>
+              모두 좋아하는<br>
+              모든 컨텐츠
+            </p>
+            <img src="images/mainpromo_pink.png" alt="" class="mainpromo-pink">
+            <img src="images/mainpromo_fox.png" alt="" class="fox" data-aos="fade-left">
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+    <!-- 두번째 엔터테인먼트 -->
+    <div class="entertain">
+      <h2 class="entertain-title">
+        핑크퐁과 노래해요!
+        <br>
+        밝은 내일을 위해, 힘차게!
+      </h2>
+      <div class="entertain-contents">
+        <ul>
+                    <li><a><img src="images/christmas.png" alt="노래3">
+          <span>HAPPY <br> CHIRSTMAS⭐</span></a></li> 
+
+          <li><a><img src="images/ent1-2.jpg" alt="노래2">
+          <span>SPACE <br> ADVENTURE🪐</span></a></li>
+          <li><a><img src="images/ent1-1.jpg" alt="노래1">
+          <span>LET'S <br> WASH HAND🧼</span></a></li>
+                    <li><a><img src="images/ent1-4.jpg" alt="노래4">
+          <span>CHEER <br> FOR FREIND🎉</span></a></li>
+        </ul>
+        <div class="entertain-button-prev"></div>
+        <div class="entertain-button-next"></div>
+      </div>
+    </div>
+
+    <!-- 세번째 스토어 -->
+    <div class="store">
+      <h2 class="store-title">
+        핑크퐁과 만나볼까요?
+        <br>
+        핑크퐁 스토어!
+      </h2>
+      <div class="store-contents">
+        <ul class="store-contents1">
+          <li>
+            <a>스토어<br>바로가기</a>
+            <div class="go">GO!</div>
+          </li>
+          <li>
+            <a>핑크퐁<span>+</span><br>둘러보기</a>
+            <div><img src="images/store-cat.png" alt="고양이"></div>
+          </li>
+        </ul>
+        <ul class="store-contents2">
+          <li>
+            <div class="store-pink">[ BEST ]
+              <div class="store-pink-img"><img src="images/store-pink.png" alt="핑크퐁채널"></div>
+            </div>
+            <div class="store-pink-chann">핑크퐁 채널</div>
+          </li>
+          <li>
+            <div class="store-hogi">[ BEST ]
+              <div class="store-hogi-img"><img src="images/store-hogi.png" alt="호기채널"></div>
+            </div>
+            <div class="store-hogi-chann">호기 채널</div>
+          </li>
+          <li>
+            <div class="store-shark">[ BEST ]
+              <div class="store-shark-img"><img src="images/store-shark.png" alt="아기상어채널"></div>
+            </div>
+            <div class="store-shark-chann">아기상어 채널</div>
+          </li>
+          <li>
+            <div class="store-poki">[ BEST ]
+              <div class="store-poki-img"><img src="images/store-poki.png" alt=""></div>
+            </div>
+            <div class="store-poki-chann">포키 채널</div>
+          </li>
+        </ul>
+
+      </div>
+    </div>
+
+    <!-- 네번째 앱 -->
+    <div class="app">
+      <h2 class="app-title">
+        스마트폰 앱으로
+        <br>
+        핑크퐁과 신나게 놀아요!
+      </h2>
+      <div class="app-contents">
+        <div class="app-main">
+
+          <div class="app-main-rain">
+            <ul>
+              <li></li>
+              <li></li>
+              <li></li>
+            </ul>
+          </div>
+          <div class="app-up">
+            <div class="app-kizapp">
+              <h4>프리미엄키즈앱</h4>
+              <div class="app-kizapp-cont">
+                <div class="app-kizapp-img"><img src="images/app-kiz-1.png" alt=""></div>
+                <div class="app-kiazapp-ul">
+                  <ul>
+                    <li>키즈APP 바로가기 <span><img src="images/circlebutton_03.png" alt=""></span></li>
+                    <li>바로가입, 핑크퐁 플러스<span><img src="images/circlebutton_03.png" alt=""></span></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="app-kizapp2">
+              <div class="app-search">
+                <label>검색</label>
+                <input type="text" placeholder="궁금한 것은 무엇이든 입력하세요!">
+              </div>
+              <div class="app-activ">
+                <ul>
+                  <li><img src="" alt="">놀이활동</li>
+                  <li><img src="" alt="">유아용 영상</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="app-notice">
+
+            <h4>공지사항 📌</h4>
+            <ul>
+              <li>아기상어 10주년, 오프라인 행사 개최… 글로벌 팬들과 만난다 . . .</li>
+              <li>미국 최대 해양 테마파크 ‘씨월드’와 아기상어 콜라보… 밋앤그릿부터 한정판 F&B·MD 선보여 . . .</li>
+              <li>일본 도쿄 키즈 페스티벌 ‘아소비 마나비 페스타’에서 10주년 기념 어트랙션과 스페셜 굿즈 마련 . . .</li>
+              <li>전국 갤러리아백화점 4개 지점에서 아기상어 팝업스토어 릴레이 오픈… 생일파티 컨셉 포토타임 및 상영회 개최 . . .</li>
+              <li>아동·청소년 연령에 적합한 고품질 콘텐츠 제작 및 건강한 유튜브 문화 조성에 앞장 . . .</li>
+            </ul>
+          </div>
+          <div class="app-last"><span><img src="images/button_blaxk.png" alt=""></span></div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- 네번째 익스플로어 -->
+    <div class="explore">
+      <h2 class="explore-title">
+        더욱 다양한
+        <br>
+        콘텐츠를 즐겨보세요!
+        더 다양한 콘텐츠를 보려면? 드래그 해보세요!
+      </h2>
+      <div class="explore-contents">
+        <div class="explore-carousel">
+          <div class="slide"><img src="images/explo-2.png" alt=""></div>
+          <div class="slide"><img src="images/explo-3.png" alt=""></div>
+          <div class="slide"><img src="images/explo-1.png" alt=""></div>
+          <div class="slide"><img src="images/explo-4.png" alt=""></div>
+          <div class="slide"><img src="images/explo-5.png" alt=""></div>
+          
+        </div>
+      </div>
+      <!-- 마지막 -->
+
+    </div>
+
+
+    <div class="last">
+      <div class="last-img1"><img src="images/sea1.png" alt="">
+        <div class="chat-text"></div>
+      </div>
+      <div class="last-img2"><img src="images/sea2.png" alt=""></div>
+    </div>
+  </div>
+
+
+  <div id="footer">
+    <div class=footer-contents>
+      <div class="footer-contents-1">
+    <ul class="footer-1">
+      <li><a href="#">제휴 문의</a></li>
+      <li><a href="#">개인정보처리방침</a></li>
+      <li><a href="#">이용약관</a></li>
+      <li><a href="#">윤리경영원칙</a></li>
+    </ul>
+    <ul class="footer-2">
+      <li>서울특별시 서초구 영달로 94, 5층</li>
+      <li>서울특별시 서초구 서초대로 38길 12, 마제스타시티 타워 2, 8층</li>
+      <li>© The Pinkfong Company</li>
+      <li>더핑크퐁컴퍼니 ㅣ 대표 김민석</li>
+    </ul>
+    </div>
+    <ul class="footer-3">
+      <li><img src="images/facebook.png" alt=""></li>
+      <li><img src="images/insta.png" alt=""></li>
+    </ul>
+    </div>
+  </div>
+
+  
+  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+  <script>
+    AOS.init();
+  </script>
+</body>
+
+</html>
