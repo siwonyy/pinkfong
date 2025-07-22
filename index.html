@@ -12,55 +12,55 @@
   <title>핑크퐁</title>
 
   <script>
-$(function () {
-  let currentIndex = 0;
-  const $slides = $('#section .mainpromo .mainpromo-contents .mainpromo-contents-main ul li');
-  const totalSlides = $slides.length;
-  const $slideCounter = $('.slide-counter');
+    $(function () {
+      let currentIndex = 0;
+      const $slides = $('#section .mainpromo .mainpromo-contents .mainpromo-contents-main ul li');
+      const totalSlides = $slides.length;
+      const $slideCounter = $('.slide-counter');
 
-  // 초기 세팅 - 모두 숨기고 첫번째는 보이게 (opacity 1)
-  $slides.css({ display: 'none', opacity: 0, position: 'absolute', top: 0, left: 0, width: '100%' });
-  $slides.eq(currentIndex).css({ display: 'block', opacity: 1 });
+      // 초기 세팅 - 모두 숨기고 첫번째는 보이게 (opacity 1)
+      $slides.css({ display: 'none', opacity: 0, position: 'absolute', top: 0, left: 0, width: '100%' });
+      $slides.eq(currentIndex).css({ display: 'block', opacity: 1 });
 
-  updateCounter();
+      updateCounter();
 
-  $('.button-prev').click(function () {
-    let prevIndex = currentIndex - 1;
-    if (prevIndex < 0) prevIndex = totalSlides - 1;
+      $('.button-prev').click(function () {
+        let prevIndex = currentIndex - 1;
+        if (prevIndex < 0) prevIndex = totalSlides - 1;
 
-    $slides.eq(currentIndex).stop(true, true).animate({ opacity: 0 }, 400, function () {
-      $(this).css('display', 'none');
+        $slides.eq(currentIndex).stop(true, true).animate({ opacity: 0 }, 400, function () {
+          $(this).css('display', 'none');
+        });
+        $slides.eq(prevIndex).css('display', 'block').stop(true, true).animate({ opacity: 1 }, 400);
+
+        currentIndex = prevIndex;
+        updateCounter();
+      });
+
+      $('.button-next').click(function () {
+        let nextIndex = currentIndex + 1;
+        if (nextIndex >= totalSlides) nextIndex = 0;
+
+        $slides.eq(currentIndex).stop(true, true).animate({ opacity: 0 }, 400, function () {
+          $(this).css('display', 'none');
+        });
+        $slides.eq(nextIndex).css('display', 'block').stop(true, true).animate({ opacity: 1 }, 400);
+
+        currentIndex = nextIndex;
+        updateCounter();
+      });
+
+      function updateCounter() {
+        $slideCounter.text(('0' + (currentIndex + 1)).slice(-2) + ' / ' + ('0' + totalSlides).slice(-2));
+      }
+
+      // 자동슬라이드
+      setInterval(function () {
+        $('.button-next').click();
+      }, 5000);
     });
-    $slides.eq(prevIndex).css('display', 'block').stop(true, true).animate({ opacity: 1 }, 400);
 
-    currentIndex = prevIndex;
-    updateCounter();
-  });
-
-  $('.button-next').click(function () {
-    let nextIndex = currentIndex + 1;
-    if (nextIndex >= totalSlides) nextIndex = 0;
-
-    $slides.eq(currentIndex).stop(true, true).animate({ opacity: 0 }, 400, function () {
-      $(this).css('display', 'none');
-    });
-    $slides.eq(nextIndex).css('display', 'block').stop(true, true).animate({ opacity: 1 }, 400);
-
-    currentIndex = nextIndex;
-    updateCounter();
-  });
-
-  function updateCounter() {
-    $slideCounter.text(('0' + (currentIndex + 1)).slice(-2) + ' / ' + ('0' + totalSlides).slice(-2));
-  }
-
-  // 자동슬라이드
-  setInterval(function () {
-    $('.button-next').click();
-  }, 5000);
-});
-
-  // 두번째 메인 프로모션 (챕터 3)
+// 두번째 메인 프로모션 (챕터 3)
 $(function () {
   let currentIndex = 0;
   const $slides = $('#section .entertain .entertain-contents ul li');
@@ -82,128 +82,133 @@ $(function () {
     updateSlidePosition();
   });
 
+  // ✅ 자동 슬라이드: entertain-button-next를 5초마다 클릭
+  setInterval(function () {
+    $('.entertain-button-next').click();
+  }, 3000);
+
   function updateSlidePosition() {
     $slides.each(function (i) {
       const newLeft = ((i - currentIndex) * slideWidth);
-      $(this).stop().animate({ left: newLeft + 'px' }, 500); // ✅ 이 부분만 변경
+      $(this).stop().animate({ left: newLeft + 'px' }, 500);
     });
   }
 });
 
     // 세번쨰 메인 프로모션 (챕터 5)
-$(function() {
-  const $container = $('.store-contents2');
-  const scrollDistance = 200;
+    $(function () {
+      const $container = $('.store-contents2');
+      const scrollDistance = 200;
 
-  // 버튼 클릭 스크롤
-  $('.btn-left').on('click', function() {
-    $container.animate({ scrollLeft: '-=' + scrollDistance }, 300);
-  });
+      // 버튼 클릭 스크롤
+      $('.btn-left').on('click', function () {
+        $container.animate({ scrollLeft: '-=' + scrollDistance }, 300);
+      });
 
-  $('.btn-right').on('click', function() {
-    $container.animate({ scrollLeft: '+=' + scrollDistance }, 300);
-  });
+      $('.btn-right').on('click', function () {
+        $container.animate({ scrollLeft: '+=' + scrollDistance }, 300);
+      });
 
-  // 드래그로 스크롤 기능
-  let isDown = false;
-  let startX;
-  let scrollLeft;
+      // 드래그로 스크롤 기능
+      let isDown = false;
+      let startX;
+      let scrollLeft;
 
-  $container.on('mousedown', function(e) {
-    isDown = true;
-    $container.addClass('active');  // CSS 커서 변경용 클래스
-    startX = e.pageX - $container.offset().left;
-    scrollLeft = $container.scrollLeft();
-    e.preventDefault();  // 텍스트 드래그 방지
-  });
+      $container.on('mousedown', function (e) {
+        isDown = true;
+        $container.addClass('active');  // CSS 커서 변경용 클래스
+        startX = e.pageX - $container.offset().left;
+        scrollLeft = $container.scrollLeft();
+        e.preventDefault();  // 텍스트 드래그 방지
+      });
 
-  $(document).on('mouseup', function() {
-    isDown = false;
-    $container.removeClass('active');
-  });
+      $(document).on('mouseup', function () {
+        isDown = false;
+        $container.removeClass('active');
+      });
 
-  $(document).on('mousemove', function(e) {
-    if (!isDown) return;
-    const x = e.pageX - $container.offset().left;
-    const walk = (x - startX) * 2; // 속도 조절 가능
-    $container.scrollLeft(scrollLeft - walk);
-  });
-});
+      $(document).on('mousemove', function (e) {
+        if (!isDown) return;
+        const x = e.pageX - $container.offset().left;
+        const walk = (x - startX) * 2; // 속도 조절 가능
+        $container.scrollLeft(scrollLeft - walk);
+      });
+    });
 
 
-  // 마지막
-$(function () {
-  const $container = $('#section .explore .explore-contents');
-  const $carousel = $container.find('.explore-carousel');
-  const slideCount = $carousel.children().length;
-  const slideWidth = $carousel.children().outerWidth(true);
-  
-  // 앞뒤로 아이템 복제 (무한 반복용)
-  $carousel.append($carousel.children().clone());
-  $carousel.prepend($carousel.children().slice(0, slideCount).clone());
+    // 마지막
+    $(function () {
+      const $container = $('#section .explore .explore-contents');
+      const $carousel = $container.find('.explore-carousel');
+      const slideCount = $carousel.children().length;
+      const slideWidth = $carousel.children().outerWidth(true);
 
-  // 초기 스크롤 위치 - 원본 아이템 시작 지점으로 세팅
-  $container.scrollLeft(slideWidth * slideCount);
+      // 앞뒤로 아이템 복제 (무한 반복용)
+      $carousel.append($carousel.children().clone());
+      $carousel.prepend($carousel.children().slice(0, slideCount).clone());
 
-  let isDown = false;
-  let startX;
-  let scrollLeft;
+      // 초기 스크롤 위치 - 원본 아이템 시작 지점으로 세팅
+      $container.scrollLeft(slideWidth * slideCount);
 
-  $container.on('mousedown touchstart', function (e) {
-    isDown = true;
-    startX = e.pageX || e.originalEvent.touches[0].pageX;
-    scrollLeft = $container.scrollLeft();
-    $container.css('cursor', 'grabbing');
-    e.preventDefault();
-  });
+      let isDown = false;
+      let startX;
+      let scrollLeft;
 
-  $(document).on('mouseup touchend', function () {
-    isDown = false;
-    $container.css('cursor', 'grab');
-  });
+      $container.on('mousedown touchstart', function (e) {
+        isDown = true;
+        startX = e.pageX || e.originalEvent.touches[0].pageX;
+        scrollLeft = $container.scrollLeft();
+        $container.css('cursor', 'grabbing');
+        e.preventDefault();
+      });
 
-  $(document).on('mousemove touchmove', function (e) {
-    if (!isDown) return;
-    const x = e.pageX || e.originalEvent.touches[0].pageX;
-    const walk = startX - x;
-    $container.scrollLeft(scrollLeft + walk);
-    loopCheck();
-  });
+      $(document).on('mouseup touchend', function () {
+        isDown = false;
+        $container.css('cursor', 'grab');
+      });
 
-  function loopCheck() {
-    const maxScroll = slideWidth * slideCount * 2;
-    if ($container.scrollLeft() <= 0) {
-      $container.scrollLeft($container.scrollLeft() + slideWidth * slideCount);
-    }
-    if ($container.scrollLeft() >= maxScroll) {
-      $container.scrollLeft($container.scrollLeft() - slideWidth * slideCount);
-    }
-  }
-});
+      $(document).on('mousemove touchmove', function (e) {
+        if (!isDown) return;
+        const x = e.pageX || e.originalEvent.touches[0].pageX;
+        const walk = startX - x;
+        $container.scrollLeft(scrollLeft + walk);
+        loopCheck();
+      });
 
-// 말풍선
-$(function(){
-  const messages = [
-    "안녕 친구들!",
-    "만나서 반가워~",
-    "❤"
-  ];
+      function loopCheck() {
+        const maxScroll = slideWidth * slideCount * 2;
+        if ($container.scrollLeft() <= 0) {
+          $container.scrollLeft($container.scrollLeft() + slideWidth * slideCount);
+        }
+        if ($container.scrollLeft() >= maxScroll) {
+          $container.scrollLeft($container.scrollLeft() - slideWidth * slideCount);
+        }
+      }
+    });
 
-  let index = 0;
-  const $chat = $('.chat-text');
+    // 말풍선
+    $(function () {
+      const messages = [
+        "안녕 친구들!",
+        "만나서 반가워~",
+        "❤"
+      ];
 
-  function showNextMessage() {
-    if (index >= messages.length) {
-      index = 0;  // 인덱스 초기화해서 반복
-    }
-    $chat.text(messages[index]).fadeIn(1000).delay(2000).fadeOut(1000, function() {
-      index++;
+      let index = 0;
+      const $chat = $('.chat-text');
+
+      function showNextMessage() {
+        if (index >= messages.length) {
+          index = 0;  // 인덱스 초기화해서 반복
+        }
+        $chat.text(messages[index]).fadeIn(1000).delay(1000).fadeOut(1000, function () {
+          index++;
+          showNextMessage();
+        });
+      }
+
       showNextMessage();
     });
-  }
-
-  showNextMessage();
-});
   </script>
 </head>
 
@@ -286,15 +291,14 @@ $(function(){
       </h2>
       <div class="entertain-contents">
         <ul>
-                    <li><a><img src="images/christmas.png" alt="노래3">
-          <span>HAPPY <br> CHIRSTMAS⭐</span></a></li> 
-
+          <li><a><img src="images/christmas.png" alt="노래3">
+              <span>HAPPY <br> CHIRSTMAS⭐</span></a></li>
           <li><a><img src="images/ent1-2.jpg" alt="노래2">
-          <span>SPACE <br> ADVENTURE🪐</span></a></li>
+              <span>SPACE <br> ADVENTURE🪐</span></a></li>
           <li><a><img src="images/ent1-1.jpg" alt="노래1">
-          <span>LET'S <br> WASH HAND🧼</span></a></li>
-                    <li><a><img src="images/ent1-4.jpg" alt="노래4">
-          <span>CHEER <br> FOR FREIND🎉</span></a></li>
+              <span>LET'S <br> WASH HAND🧼</span></a></li>
+          <li><a><img src="images/ent1-4.jpg" alt="노래4">
+              <span>CHEER <br> FOR FREIND🎉</span></a></li>
         </ul>
         <div class="entertain-button-prev"></div>
         <div class="entertain-button-next"></div>
@@ -425,7 +429,7 @@ $(function(){
           <div class="slide"><img src="images/explo-1.png" alt=""></div>
           <div class="slide"><img src="images/explo-4.png" alt=""></div>
           <div class="slide"><img src="images/explo-5.png" alt=""></div>
-          
+
         </div>
       </div>
       <!-- 마지막 -->
@@ -438,34 +442,93 @@ $(function(){
         <div class="chat-text"></div>
       </div>
       <div class="last-img2"><img src="images/sea2.png" alt=""></div>
+
+      <!-- 비눗방울들 -->
+      <div id="bubble-container">
+        <!-- 버블 30개 -->
+        <div class="bubble size1" style="left: 2%; animation-delay: 0s;"></div>
+        <div class="bubble size2" style="left: 5%; animation-delay: 0.3s;"></div>
+        <div class="bubble size3" style="left: 8%; animation-delay: 0.7s;"></div>
+        <div class="bubble size4" style="left: 11%; animation-delay: 1.1s;"></div>
+        <div class="bubble size1" style="left: 14%; animation-delay: 1.4s;"></div>
+        <div class="bubble size2" style="left: 18%; animation-delay: 1.8s;"></div>
+        <div class="bubble size3" style="left: 21%; animation-delay: 2.2s;"></div>
+        <div class="bubble size4" style="left: 24%; animation-delay: 2.6s;"></div>
+        <div class="bubble size1" style="left: 27%; animation-delay: 3s;"></div>
+        <div class="bubble size2" style="left: 30%; animation-delay: 3.3s;"></div>
+        <div class="bubble size3" style="left: 34%; animation-delay: 3.6s;"></div>
+        <div class="bubble size4" style="left: 37%; animation-delay: 3.9s;"></div>
+        <div class="bubble size1" style="left: 40%; animation-delay: 4.2s;"></div>
+        <div class="bubble size2" style="left: 44%; animation-delay: 4.5s;"></div>
+        <div class="bubble size3" style="left: 47%; animation-delay: 4.8s;"></div>
+        <div class="bubble size4" style="left: 50%; animation-delay: 5.1s;"></div>
+        <div class="bubble size1" style="left: 53%; animation-delay: 5.4s;"></div>
+        <div class="bubble size2" style="left: 56%; animation-delay: 5.7s;"></div>
+        <div class="bubble size3" style="left: 59%; animation-delay: 6s;"></div>
+        <div class="bubble size4" style="left: 62%; animation-delay: 6.3s;"></div>
+        <div class="bubble size1" style="left: 65%; animation-delay: 6.6s;"></div>
+        <div class="bubble size2" style="left: 68%; animation-delay: 6.9s;"></div>
+        <div class="bubble size3" style="left: 71%; animation-delay: 7.2s;"></div>
+        <div class="bubble size4" style="left: 74%; animation-delay: 7.5s;"></div>
+        <div class="bubble size1" style="left: 77%; animation-delay: 7.8s;"></div>
+        <div class="bubble size2" style="left: 80%; animation-delay: 8.1s;"></div>
+        <div class="bubble size3" style="left: 83%; animation-delay: 8.4s;"></div>
+        <div class="bubble size4" style="left: 86%; animation-delay: 8.7s;"></div>
+        <div class="bubble size1" style="left: 89%; animation-delay: 9s;"></div>
+        <div class="bubble size2" style="left: 92%; animation-delay: 9.3s;"></div>
+        <div class="bubble size3" style="left: 95%; animation-delay: 9.6s;"></div>
+        <div class="bubble size4" style="left: 98%; animation-delay: 9.9s;"></div>
+      </div>
+
     </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
   </div>
+
+
+
+
+
+
+
+
 
 
   <div id="footer">
     <div class=footer-contents>
       <div class="footer-contents-1">
-    <ul class="footer-1">
-      <li><a href="#">제휴 문의</a></li>
-      <li><a href="#">개인정보처리방침</a></li>
-      <li><a href="#">이용약관</a></li>
-      <li><a href="#">윤리경영원칙</a></li>
-    </ul>
-    <ul class="footer-2">
-      <li>서울특별시 서초구 영달로 94, 5층</li>
-      <li>서울특별시 서초구 서초대로 38길 12, 마제스타시티 타워 2, 8층</li>
-      <li>© The Pinkfong Company</li>
-      <li>더핑크퐁컴퍼니 ㅣ 대표 김민석</li>
-    </ul>
-    </div>
-    <ul class="footer-3">
-      <li><img src="images/facebook.png" alt=""></li>
-      <li><img src="images/insta.png" alt=""></li>
-    </ul>
+        <ul class="footer-1">
+          <li><a href="#">제휴 문의</a></li>
+          <li><a href="#">개인정보처리방침</a></li>
+          <li><a href="#">이용약관</a></li>
+          <li><a href="#">윤리경영원칙</a></li>
+        </ul>
+        <ul class="footer-2">
+          <li>서울특별시 서초구 영달로 94, 5층</li>
+          <li>서울특별시 서초구 서초대로 38길 12, 마제스타시티 타워 2, 8층</li>
+          <li>© The Pinkfong Company</li>
+          <li>더핑크퐁컴퍼니 ㅣ 대표 김민석</li>
+        </ul>
+      </div>
+      <ul class="footer-3">
+        <li><img src="images/facebook.png" alt=""></li>
+        <li><img src="images/insta.png" alt=""></li>
+      </ul>
     </div>
   </div>
 
-  
+
   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
   <script>
     AOS.init();
