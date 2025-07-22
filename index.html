@@ -60,40 +60,40 @@
       }, 5000);
     });
 
-// 두번째 메인 프로모션 (챕터 3)
-$(function () {
-  let currentIndex = 0;
-  const $slides = $('#section .entertain .entertain-contents ul li');
-  const slideCount = $slides.length;
-  const slideWidth = 1350;
+    // 두번째 메인 프로모션 (챕터 3)
+    $(function () {
+      let currentIndex = 0;
+      const $slides = $('#section .entertain .entertain-contents ul li');
+      const slideCount = $slides.length;
+      const slideWidth = 1350;
 
-  // ✅ 초기에 정확한 위치 세팅
-  updateSlidePosition();
+      // 위치 세팅
+      updateSlidePosition();
 
-  $('.entertain-button-next').click(function () {
-    currentIndex++;
-    if (currentIndex >= slideCount) currentIndex = 0;
-    updateSlidePosition();
-  });
+      $('.entertain-button-next').click(function () {
+        currentIndex++;
+        if (currentIndex >= slideCount) currentIndex = 0;
+        updateSlidePosition();
+      });
 
-  $('.entertain-button-prev').click(function () {
-    currentIndex--;
-    if (currentIndex < 0) currentIndex = slideCount - 1;
-    updateSlidePosition();
-  });
+      $('.entertain-button-prev').click(function () {
+        currentIndex--;
+        if (currentIndex < 0) currentIndex = slideCount - 1;
+        updateSlidePosition();
+      });
 
-  // ✅ 자동 슬라이드: entertain-button-next를 5초마다 클릭
-  setInterval(function () {
-    $('.entertain-button-next').click();
-  }, 3000);
+      // 자동 슬라이드
+      setInterval(function () {
+        $('.entertain-button-next').click();
+      }, 3000);
 
-  function updateSlidePosition() {
-    $slides.each(function (i) {
-      const newLeft = ((i - currentIndex) * slideWidth);
-      $(this).stop().animate({ left: newLeft + 'px' }, 500);
+      function updateSlidePosition() {
+        $slides.each(function (i) {
+          const newLeft = ((i - currentIndex) * slideWidth);
+          $(this).stop().animate({ left: newLeft + 'px' }, 500);
+        });
+      }
     });
-  }
-});
 
     // 세번쨰 메인 프로모션 (챕터 5)
     $(function () {
@@ -109,14 +109,14 @@ $(function () {
         $container.animate({ scrollLeft: '+=' + scrollDistance }, 300);
       });
 
-      // 드래그로 스크롤 기능
+      // 드래그로 스크롤
       let isDown = false;
       let startX;
       let scrollLeft;
 
       $container.on('mousedown', function (e) {
         isDown = true;
-        $container.addClass('active');  // CSS 커서 변경용 클래스
+        $container.addClass('active');  // CSS 커서 변경
         startX = e.pageX - $container.offset().left;
         scrollLeft = $container.scrollLeft();
         e.preventDefault();  // 텍스트 드래그 방지
@@ -130,7 +130,7 @@ $(function () {
       $(document).on('mousemove', function (e) {
         if (!isDown) return;
         const x = e.pageX - $container.offset().left;
-        const walk = (x - startX) * 2; // 속도 조절 가능
+        const walk = (x - startX) * 2; // 속도
         $container.scrollLeft(scrollLeft - walk);
       });
     });
@@ -143,11 +143,11 @@ $(function () {
       const slideCount = $carousel.children().length;
       const slideWidth = $carousel.children().outerWidth(true);
 
-      // 앞뒤로 아이템 복제 (무한 반복용)
+      // 무한 반복용
       $carousel.append($carousel.children().clone());
       $carousel.prepend($carousel.children().slice(0, slideCount).clone());
 
-      // 초기 스크롤 위치 - 원본 아이템 시작 지점으로 세팅
+      // 초기 스크롤 위치
       $container.scrollLeft(slideWidth * slideCount);
 
       let isDown = false;
@@ -199,7 +199,7 @@ $(function () {
 
       function showNextMessage() {
         if (index >= messages.length) {
-          index = 0;  // 인덱스 초기화해서 반복
+          index = 0;  // 반복
         }
         $chat.text(messages[index]).fadeIn(1000).delay(1000).fadeOut(1000, function () {
           index++;
@@ -249,12 +249,12 @@ $(function () {
       <div class="mainpromo-contents">
         <div class="mainpromo-contents-main" data-aos="fade-up">
           <ul>
-            <li><a href="#"><img src="images/mainpromo1.jpg" alt=""></a></li>
-            <li><a href="#"><img src="images/mainpromo2.png" alt=""></a></li>
-            <li><a href="#"><img src="images/mainpromo3.png" alt=""></a></li>
+            <li><a href="#"><img src="images/mainpromo1.jpg" alt="사진1"></a></li>
+            <li><a href="#"><img src="images/mainpromo2.png" alt="사진2"></a></li>
+            <li><a href="#"><img src="images/mainpromo3.png" alt="사진3"></a></li>
           </ul>
           <div class="button">
-            <img src="images/main_button.png" alt="">
+            <img src="images/main_button.png" alt="버튼">
             <div class="button-prev"></div>
             <div class="slide-counter">01 / 03</div>
             <div class="button-next"></div>

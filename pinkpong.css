@@ -73,6 +73,7 @@ p {
   width: 200px;
   height: auto;
   flex-shrink: 0;
+  cursor: pointer;
 }
 
 #header .header-inner .nav {
